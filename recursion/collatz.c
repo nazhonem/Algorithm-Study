@@ -4,13 +4,13 @@ int collatz(int n);
 
 int main(void)
 {
-    // Get user input (positive number)    
     int num;
-    do 
-    {
+
+    // Get user input (positive number)   
+    do {
         printf("Enter a positive integer: ");
         scanf("%d", &num);
-    } while (num <= 0); // Ensure the number is positive
+    } while (num <= 0); 
 
     // Calculate Collatz sequence length using recursion
     printf("Collatz sequence length for %d is %d\n", num, collatz(num));
