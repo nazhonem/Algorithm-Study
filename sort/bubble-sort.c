@@ -25,9 +25,8 @@ int main(int argc, char *argv[])
 
     // scan in numbers
     for (int i = 0; i < ARRAY_SIZE; i++) {
-        fscanf(file, "%d", &numbers[i]);
-
-        if (feof(file)) {
+        if (fscanf(file, "%d", &numbers[i]) != 1) {
+            printf("Failed to read number at index %d\n", i);
             break;
         }
     }
@@ -36,12 +35,17 @@ int main(int argc, char *argv[])
 
     bubble_sort(numbers);
 
-    FILE *sorted_file = fopen("sorted.txt", "wb");
+    FILE *sorted_file = fopen("sorted.txt", "w");
     if (sorted_file) {
-        fwrite(numbers, sizeof(int), ARRAY_SIZE, sorted_file);
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            if (fprintf(sorted_file, "%d\n", numbers[i]) < 0) {
+                printf("Failed to write number at index %d\n", i);
+            }
+        }
         fclose(sorted_file);
     } else {
         perror("Error opening sorted.txt");
+        return 1;
     }
 
     return 0;
@@ -50,14 +54,17 @@ int main(int argc, char *argv[])
 
 void bubble_sort(int arr[])
 {
-    for (int i = 0; i < ARRAY_SIZE; i++) {
-        int smallest = i;
-        for (int j = i + 1; j < ARRAY_SIZE; j++) {
-            if (arr[j] < arr[smallest]) {
-                smallest = j;
+    for (int i = 0; i < ARRAY_SIZE - 1; i++) {
+        int swapped = 0;
+        for (int j = 0; j < ARRAY_SIZE - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(&arr[j], &arr[j + 1]);
+                swapped = 1;
             }
         }
-        swap(&arr[i], &arr[smallest]);
+        if (!swapped) {
+            break; 
+        }
     }
 }
 
